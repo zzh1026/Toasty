@@ -10,6 +10,7 @@ import android.support.annotation.ColorInt;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -18,17 +19,17 @@ import android.widget.Toast;
 
 /**
  * This file is part of Toasty.
- *
+ * <p>
  * Toasty is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
+ * <p>
  * Toasty is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- *
+ * <p>
  * You should have received a copy of the GNU General Public License
  * along with Toasty.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -130,7 +131,7 @@ public class Toasty {
     @CheckResult
     public static Toast success(@NonNull Context context, @NonNull CharSequence message, int duration, boolean withIcon) {
         return custom(context, message, ToastyUtils.getDrawable(context, R.drawable.ic_check_white_48dp),
-               SUCCESS_COLOR, duration, withIcon, true);
+                SUCCESS_COLOR, duration, withIcon, true);
     }
 
     @CheckResult
@@ -168,7 +169,7 @@ public class Toasty {
                                @ColorInt int tintColor, int duration,
                                boolean withIcon, boolean shouldTint) {
         final Toast currentToast = new Toast(context);
-        final View toastLayout = ((LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE))
+        final View toastLayout = (LayoutInflater.from(context))
                 .inflate(R.layout.toast_layout, null);
         final ImageView toastIcon = (ImageView) toastLayout.findViewById(R.id.toast_icon);
         final TextView toastTextView = (TextView) toastLayout.findViewById(R.id.toast_text);
@@ -182,7 +183,7 @@ public class Toasty {
 
         if (withIcon) {
             if (icon == null)
-                throw new IllegalArgumentException("Avoid passing 'icon' as null if 'withIcon' is set to true");
+                throw new IllegalArgumentException("如果设置 withIcon 为 true,则 icon 不可为空");
             if (tintIcon)
                 icon = ToastyUtils.tintIcon(icon, DEFAULT_TEXT_COLOR);
             ToastyUtils.setBackground(toastIcon, icon);
@@ -197,6 +198,7 @@ public class Toasty {
 
         currentToast.setView(toastLayout);
         currentToast.setDuration(duration);
+        currentToast.setGravity(Gravity.CENTER, 0, 0);
         return currentToast;
     }
 
