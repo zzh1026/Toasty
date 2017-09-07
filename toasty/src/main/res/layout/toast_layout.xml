@@ -13,7 +13,6 @@
         android:id="@+id/toast_icon"
         android:layout_width="24dp"
         android:layout_height="24dp"
-        android:layout_marginBottom="4dp"
         android:layout_marginTop="5dp"
         android:contentDescription="@string/toast_message" />
 
@@ -21,6 +20,7 @@
         android:id="@+id/toast_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="5dp" />
+        android:layout_marginBottom="5dp"
+        android:layout_marginTop="5dp" />
 
 </LinearLayout>

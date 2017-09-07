@@ -55,6 +55,11 @@ public class Toasty {
 
     private static boolean tintIcon = true;
 
+    private static Toast currentToast;  //全局维护一个toast 即可
+    private static View toastLayout;    //全局维护一个toastLayout 即可
+    private static ImageView toastIcon;
+    private static TextView toastTextView;
+
     private Toasty() {
         // avoiding instantiation
     }
@@ -164,33 +169,48 @@ public class Toasty {
                 tintColor, duration, withIcon, shouldTint);
     }
 
+    /**
+     * 创建一个 居中显示的 toast
+     *
+     * @param context
+     * @param message    需要展示的消息
+     * @param icon       需要展示的drawable图片
+     * @param tintColor  toast的背景颜色
+     * @param duration   展示时长, short , long 两种
+     * @param withIcon   是否展示icon,一般有icon 会展示
+     * @param shouldTint 是否需要自定义背景颜色
+     * @return
+     */
     @CheckResult
     public static Toast custom(@NonNull Context context, @NonNull CharSequence message, Drawable icon,
                                @ColorInt int tintColor, int duration,
                                boolean withIcon, boolean shouldTint) {
-        final Toast currentToast = new Toast(context);
-        final View toastLayout = (LayoutInflater.from(context))
-                .inflate(R.layout.toast_layout, null);
-        final ImageView toastIcon = (ImageView) toastLayout.findViewById(R.id.toast_icon);
-        final TextView toastTextView = (TextView) toastLayout.findViewById(R.id.toast_text);
+        if (currentToast == null) {
+            currentToast = new Toast(context);
+        }
+        if (toastLayout == null) {
+            toastLayout = (LayoutInflater.from(context)).inflate(R.layout.toast_layout, null);
+            toastIcon = (ImageView) toastLayout.findViewById(R.id.toast_icon);
+            toastTextView = (TextView) toastLayout.findViewById(R.id.toast_text);
+        }
         Drawable drawableFrame;
 
         if (shouldTint)
             drawableFrame = ToastyUtils.tint9PatchDrawableFrame(context, tintColor);
         else
-            drawableFrame = ToastyUtils.getDrawable(context, R.drawable.toast_frame);
+            drawableFrame = ToastyUtils.getDrawable(context, R.drawable.toast_frame_range);
         ToastyUtils.setBackground(toastLayout, drawableFrame);
 
         if (withIcon) {
             if (icon == null)
                 throw new IllegalArgumentException("如果设置 withIcon 为 true,则 icon 不可为空");
-            if (tintIcon)
+            if (tintIcon)   //tintIcon是用来在全局配置是否展示 icon 的.
                 icon = ToastyUtils.tintIcon(icon, DEFAULT_TEXT_COLOR);
+            toastIcon.setVisibility(View.VISIBLE);
             ToastyUtils.setBackground(toastIcon, icon);
         } else {
             toastIcon.setVisibility(View.GONE);
         }
-
         toastTextView.setTextColor(DEFAULT_TEXT_COLOR);
         toastTextView.setText(message);
         toastTextView.setTypeface(currentTypeface);
